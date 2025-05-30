@@ -41,6 +41,7 @@ const OrderForm = ({
                     ? existingOrder.orderItems.map(item => ({
                         menuItemId: item.menuItemId,
                         quantity: item.quantity,
+                        delivered: item.delivered
                     }))
                     : [{ menuItemId: '', quantity: 1 }]
             );
@@ -105,8 +106,7 @@ const OrderForm = ({
                 itemName: menuItem ? menuItem.name : 'Item Desconhecido',
                 quantity: item.quantity,
                 unitPrice: menuItem ? menuItem.price : 0,
-                delivered: item.delivered ?? false, // ✅ Por padrão, false se não estiver definido
-
+                delivered: isEditing ? item.delivered ?? false : false, // ✅ Por padrão, false se não estiver definido
             };
         });
 
