@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import { Edit3 as Edit3Icon, Trash2 as Trash2Icon } from 'lucide-react';
-import { ref, remove, } from "firebase/database";
-import { appId } from '@/app/contexts/FirebaseContext/FirebaseContext';
-import { useFirebase } from '@/app/contexts/FirebaseContext/FirebaseContext';
-import { useAuth } from '@/app/contexts/FirebaseProvider/FirebaseProvider';
 import { formatDate } from '@/core/formatDate/formatDate';
 import { formatCurrency } from '@/core/formatCurrency/formatCurrency';
+import { useOrders } from '@/app/contexts/OrdersProvider/OrdersProvider';
 
 const OrderItem = ({ order, onEditOrder }) => {
     const [newStatus, setNewStatus] = useState(order.status);
     const [isUpdating, setIsUpdating] = useState(false);
-    const { db } = useFirebase();
-    const { user } = useAuth();
-    const userId = user.uid
+
+    const { deleteOrder, onUpdateStatus } = useOrders();
+
 
     // --- Order Status Options ---
     const ORDER_STATUSES = ['pendente', 'em preparo', 'pronto para entrega', 'entregue', 'cancelado'];
@@ -27,40 +24,6 @@ const OrderItem = ({ order, onEditOrder }) => {
             setNewStatus(order.status);
         } finally {
             setIsUpdating(false);
-        }
-    };
-
-    const deleteOrder = async (orderId) => {
-        if (!userId || !db) {
-            console.error("User not authenticated or DB not initialized for delete operation.");
-            setError("Não é possível excluir o pedido: usuário ou banco de dados não disponível.");
-            return;
-        }
-
-        // Usar ref para o caminho correto no Realtime Database
-        const orderRef = ref(db, `artifacts/${appId}/users/${userId}/orders/${orderId}`);
-
-        try {
-            await remove(orderRef);  // remove para deletar no Realtime Database
-        } catch (err) {
-            console.error("Error deleting order:", err);
-            setError(`Erro ao excluir pedido: ${err.message}`);
-        }
-    };
-
-    const onUpdateStatus = async (orderId, newStatus) => {
-        if (!user || !db) {
-            console.error("User not authenticated or DB not initialized for status update.");
-            setError("Não é possível atualizar o status: usuário ou banco de dados não disponível.");
-            return;
-        }
-        const orderRef = doc(db, `artifacts/${appId}/users/${user.uid}/orders`, orderId);
-        try {
-            await updateDoc(orderRef, { status: newStatus });
-        } catch (err) {
-            console.error("Error updating order status:", err);
-            setError(`Erro ao atualizar status do pedido: ${err.message}`);
-            throw err;
         }
     };
 
@@ -93,7 +56,7 @@ const OrderItem = ({ order, onEditOrder }) => {
                         order.status
                     )}`}
                 >
-                    {order.status.toUpperCase()}
+                    {order.status?.toUpperCase()}
                 </span>
             </div>
 
