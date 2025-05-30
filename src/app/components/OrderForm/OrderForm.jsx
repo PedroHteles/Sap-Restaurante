@@ -3,14 +3,14 @@ import { Trash2Icon, PlusCircleIcon } from 'lucide-react';
 import { ref, push, update, serverTimestamp } from 'firebase/database';
 import { appId } from '@/app/contexts/FirebaseContext/FirebaseContext';
 import { useFirebase } from '@/app/contexts/FirebaseContext/FirebaseContext';
+import { formatCurrency } from '@/core/formatCurrency/formatCurrency';
 
 const OrderForm = ({
     userId,
     onOrderAdded,
     existingOrder,
     onOrderUpdated,
-    onCancelEdit,
-    formatCurrency
+    onCancelEdit
 
 }) => {
     const [tableNumber, setTableNumber] = useState('');

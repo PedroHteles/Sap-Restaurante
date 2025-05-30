@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ref, push, set, get, remove, update } from 'firebase/database';
-import { db } from './firebaseConfig'; // importa sua configuração do Firebase
+import { useFirebase } from '@/app/contexts/FirebaseContext/FirebaseContext';
 
 const MenuAdmin = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [form, setForm] = useState({ name: '', price: '', category: '' });
     const [editingId, setEditingId] = useState(null);
-
+    const { db } = useFirebase();
     // Carregar os itens do banco
     useEffect(() => {
         const fetchMenu = async () => {

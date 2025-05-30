@@ -1,6 +1,10 @@
 import { appId } from "@/app/contexts/FirebaseContext/FirebaseContext";
+import { useAuth } from "@/app/contexts/FirebaseProvider/FirebaseProvider";
 
-export default function Footer({ user }) {
+export default function Footer() {
+
+    const { user } = useAuth();
+
     return (
         <footer className="text-center py-6 text-sm text-gray-500">
             <p>

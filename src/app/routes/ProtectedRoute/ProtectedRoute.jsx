@@ -1,8 +1,10 @@
-import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/app/contexts/FirebaseProvider/FirebaseProvider';
+import LoginScreen from '@/app/components/LoginScreen/LoginScreen';
+import { useFirebase } from '@/app/contexts/FirebaseContext/FirebaseContext';
 
-const AdminRoute = ({ children }) => {
+const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
+    const { auth, appId } = useFirebase();
 
     if (loading) {
         return (
@@ -12,11 +14,11 @@ const AdminRoute = ({ children }) => {
         );
     }
 
-    if (!user || !user.isAdmin) {
-        return <Navigate to="/" />;
+    if (!user) {
+        return <LoginScreen auth={auth} appId={appId} />;
     }
 
     return children;
 };
 
-export default AdminRoute;
+export default ProtectedRoute;

@@ -3,12 +3,17 @@ import { Edit3 as Edit3Icon, Trash2 as Trash2Icon } from 'lucide-react';
 import { ref, remove, } from "firebase/database";
 import { appId } from '@/app/contexts/FirebaseContext/FirebaseContext';
 import { useFirebase } from '@/app/contexts/FirebaseContext/FirebaseContext';
+import { useAuth } from '@/app/contexts/FirebaseProvider/FirebaseProvider';
+import { formatDate } from '@/core/formatDate/formatDate';
+import { formatCurrency } from '@/core/formatCurrency/formatCurrency';
 
-const OrderItem = ({ order, onUpdateStatus, onEditOrder, formatCurrency, formatDate, userId }) => {
+const OrderItem = ({ order, onEditOrder }) => {
     const [newStatus, setNewStatus] = useState(order.status);
     const [isUpdating, setIsUpdating] = useState(false);
-
     const { db } = useFirebase();
+    const { user } = useAuth();
+    const userId = user.uid
+
     // --- Order Status Options ---
     const ORDER_STATUSES = ['pendente', 'em preparo', 'pronto para entrega', 'entregue', 'cancelado'];
 
@@ -42,6 +47,23 @@ const OrderItem = ({ order, onUpdateStatus, onEditOrder, formatCurrency, formatD
             setError(`Erro ao excluir pedido: ${err.message}`);
         }
     };
+
+    const onUpdateStatus = async (orderId, newStatus) => {
+        if (!user || !db) {
+            console.error("User not authenticated or DB not initialized for status update.");
+            setError("Não é possível atualizar o status: usuário ou banco de dados não disponível.");
+            return;
+        }
+        const orderRef = doc(db, `artifacts/${appId}/users/${user.uid}/orders`, orderId);
+        try {
+            await updateDoc(orderRef, { status: newStatus });
+        } catch (err) {
+            console.error("Error updating order status:", err);
+            setError(`Erro ao atualizar status do pedido: ${err.message}`);
+            throw err;
+        }
+    };
+
 
     const getStatusColor = (status) => {
         switch (status) {

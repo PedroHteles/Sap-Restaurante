@@ -4,13 +4,19 @@ import './index.css'
 import App from './app/App.jsx'
 import { FirebaseProvider } from '@/app/contexts/FirebaseContext/FirebaseContext'
 import { AuthProvider } from '@/app/contexts/FirebaseProvider/FirebaseProvider'
-
+import { LoadingProvider } from '@/app/contexts/LoadingProvider/LoadingProvider'
+import { ModalProvider } from '@/app/contexts/ModalProvider/ModalProvider'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <FirebaseProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </FirebaseProvider>
+    <LoadingProvider>
+      <FirebaseProvider>
+        <AuthProvider>
+          <ModalProvider>
+            <App />
+          </ModalProvider>
+        </AuthProvider>
+      </FirebaseProvider>
+    </LoadingProvider>
+
   </StrictMode>,
 )
