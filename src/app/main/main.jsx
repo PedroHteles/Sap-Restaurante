@@ -23,19 +23,10 @@ function Main() {
         <OrderForm
           key={order ? order.id : 'new-order-form'}
           userId={user.uid}
-          onOrderAdded={() => {
-            closeModal(false);
-            setEditingOrder(null);
-          }}
+          onOrderAdded={() => { closeModal(false) }}
           existingOrder={order}
-          onOrderUpdated={() => {
-            closeModal(false);
-            setEditingOrder(null);
-          }}
-          onCancelEdit={() => {
-            closeModal(false);
-            setEditingOrder(null);
-          }}
+          onOrderUpdated={() => { closeModal(false) }}
+          onCancelEdit={() => { closeModal(false) }}
         />
       )
     });
