@@ -9,6 +9,8 @@ import EmptyState from '@/app/components/EmptyState/EmptyState';
 import { useAuth } from '@/app/contexts/FirebaseProvider/FirebaseProvider';
 import { useModal } from '@/app/contexts/ModalProvider/ModalProvider';
 import { useOrders } from '@/app/contexts/OrdersProvider/OrdersProvider';
+import DeliveryManager from '@/app/components/DeliveryManager/DeliveryManager';
+
 // Main App Component
 function Main() {
 
@@ -53,6 +55,16 @@ function Main() {
             </button>
 
             <button
+              onClick={() => setActiveTab("entregar")}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "entregar"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+            >
+              Entregar Pedido
+            </button>
+
+            <button
               onClick={() => setActiveTab("acompanhar")}
               className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "acompanhar"
                 ? "border-blue-600 text-blue-600"
@@ -75,6 +87,16 @@ function Main() {
                   Novo Pedido
                 </ButtonNewPedido>
               </div>
+            </div>
+          </>
+        )}
+        {activeTab === "entregar" && (
+          <>
+            {/* Conteúdo da tela de Acompanhar Pedidos */}
+            <div className="p-6 bg-white rounded-md shadow">
+              <DeliveryManager
+                orders={orders}
+              />
             </div>
           </>
         )}

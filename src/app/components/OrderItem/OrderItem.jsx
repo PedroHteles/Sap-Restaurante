@@ -47,23 +47,21 @@ const OrderItem = ({ order, onEditOrder }) => {
 
 
     return (
-        // Layout visual do card atualizado
         <div className={`bg-white rounded-xl shadow-lg p-4 mb-4 border-l-4 ${currentStatusStyles.border} transition-all duration-300 ease-in-out hover:shadow-xl`}>
-            {/* Cabeçalho Principal */}
+
+            {/* Header */}
             <div className="flex justify-between items-center mb-3">
                 <h3 className="text-lg font-bold text-indigo-700">
                     <Tag size={20} className="inline mr-2 opacity-70" />
                     Mesa: {order.tableNumber}
                 </h3>
-                <span
-                    className={`px-3 py-1 text-xs font-semibold rounded-full flex items-center ${currentStatusStyles.bg} ${currentStatusStyles.text}`}
-                >
+                <span className={`px-3 py-1 text-xs font-semibold rounded-full flex items-center ${currentStatusStyles.bg} ${currentStatusStyles.text}`}>
                     {currentStatusStyles.icon}
                     <span className="ml-1.5">{order.status?.toUpperCase()}</span>
                 </span>
             </div>
 
-            {/* Itens do Pedido (resumido) */}
+            {/* Order Items Summary */}
             <div className="mb-3">
                 <p className="text-sm text-gray-500 mb-1">
                     <ListFilter size={14} className="inline mr-1 opacity-60" />
@@ -72,12 +70,22 @@ const OrderItem = ({ order, onEditOrder }) => {
                 {Array.isArray(order.orderItems) && order.orderItems.length > 0 && (
                     <ul className="text-xs text-gray-600 list-inside space-y-0.5 pl-2">
                         {order.orderItems.slice(0, 2).map((item, index) => (
-                            <li key={index} className="truncate">
-                                {item.quantity}x {item.itemName}
+                            <li key={index} className="truncate flex items-center gap-1">
+                                <span>
+                                    {item.quantity}x {item.itemName}
+                                </span>
+                                {item.delivered ? (
+                                    <span className="text-green-600 font-medium">✅</span>
+                                ) : (
+                                    <span className="text-yellow-600 font-medium">⏳</span>
+                                )}
                             </li>
                         ))}
                         {order.orderItems.length > 2 && (
-                            <li className="text-indigo-600 text-xs cursor-pointer hover:underline" onClick={() => setShowDetails(!showDetails)}>
+                            <li
+                                className="text-indigo-600 text-xs cursor-pointer hover:underline"
+                                onClick={() => setShowDetails(!showDetails)}
+                            >
                                 {showDetails ? 'Mostrar menos' : `Ver mais ${order.orderItems.length - 2} itens...`}
                             </li>
                         )}
@@ -85,13 +93,13 @@ const OrderItem = ({ order, onEditOrder }) => {
                 )}
             </div>
 
-            {/* Total do Pedido */}
+            {/* Total */}
             <p className="text-md font-semibold text-gray-800 mb-4 text-right">
                 <DollarSign size={16} className="inline mr-1 opacity-70" />
                 Total: {formatCurrency(order.totalPrice)}
             </p>
 
-            {/* Detalhes Adicionais (expansível) */}
+            {/* Details Expanded */}
             {showDetails && (
                 <div className="bg-gray-50 p-3 rounded-md mb-4 animate-fadeIn">
                     <h4 className="text-sm font-semibold text-gray-700 mb-2">Detalhes do Pedido:</h4>
@@ -107,8 +115,15 @@ const OrderItem = ({ order, onEditOrder }) => {
                     {Array.isArray(order.orderItems) && (
                         <ul className="list-disc list-inside pl-2 space-y-0.5 text-xs text-gray-600 max-h-28 overflow-y-auto">
                             {order.orderItems.map((item, index) => (
-                                <li key={index}>
-                                    {item.itemName} - {item.quantity} x {formatCurrency(item.unitPrice)}
+                                <li key={index} className="flex items-center gap-1">
+                                    <span>
+                                        {item.itemName} - {item.quantity} x {formatCurrency(item.unitPrice)}
+                                    </span>
+                                    {item.delivered ? (
+                                        <span className="text-green-600 font-medium">✅</span>
+                                    ) : (
+                                        <span className="text-yellow-600 font-medium">⏳</span>
+                                    )}
                                 </li>
                             ))}
                         </ul>
@@ -116,16 +131,16 @@ const OrderItem = ({ order, onEditOrder }) => {
                 </div>
             )}
 
-            {/* Ações e Status com lógica original */}
+            {/* Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <div className="relative flex-grow sm:max-w-xs w-full">
                     <select
-                        value={newStatus} // Controlado pelo estado local 'newStatus'
-                        onChange={(e) => setNewStatus(e.target.value)} // Atualiza 'newStatus'
-                        onBlur={handleStatusChange} // Chama a função original no onBlur
+                        value={newStatus}
+                        onChange={(e) => setNewStatus(e.target.value)}
+                        onBlur={handleStatusChange}
                         disabled={isUpdating}
                         className={`w-full pl-3 pr-8 py-2.5 text-sm border border-gray-300 rounded-lg shadow-sm appearance-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${isUpdating ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:border-gray-400'
-                            } ${newStatusStyles.text} ${newStatusStyles.bg.replace('100', '200')}`} // Estilo baseado em newStatus
+                            } ${newStatusStyles.text} ${newStatusStyles.bg.replace('100', '200')}`}
                     >
                         {ORDER_STATUSES.map((status) => (
                             <option key={status} value={status} className={`${getStatusStyles(status).bg.replace('100', '50')} ${getStatusStyles(status).text}`}>
@@ -138,7 +153,7 @@ const OrderItem = ({ order, onEditOrder }) => {
 
                 <div className="flex space-x-2 shrink-0">
                     <button
-                        onClick={() => onEditOrder(order)} // Conforme seu código original
+                        onClick={() => onEditOrder(order)}
                         className="p-2.5 text-blue-600 hover:text-blue-800 rounded-lg hover:bg-blue-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 disabled:hover:bg-transparent"
                         aria-label="Editar pedido"
                         disabled={isUpdating}
@@ -146,18 +161,14 @@ const OrderItem = ({ order, onEditOrder }) => {
                         <Edit3 size={20} />
                     </button>
                     <button
-                        onClick={() => { // Lógica de exclusão original com window.confirm
-                            if (
-                                window.confirm( // Utilizando window.confirm conforme original
-                                    `Tem certeza que deseja excluir o pedido da mesa ${order.tableNumber}?`
-                                )
-                            ) {
+                        onClick={() => {
+                            if (window.confirm(`Tem certeza que deseja excluir o pedido da mesa ${order.tableNumber}?`)) {
                                 deleteOrder(order.id);
                             }
                         }}
                         className="p-2.5 text-red-600 hover:text-red-800 rounded-lg hover:bg-red-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-50 disabled:hover:bg-transparent"
                         aria-label="Excluir pedido"
-                        disabled={isUpdating} // Desabilitado apenas se estiver atualizando status
+                        disabled={isUpdating}
                     >
                         <Trash2 size={20} />
                     </button>

@@ -105,6 +105,8 @@ const OrderForm = ({
                 itemName: menuItem ? menuItem.name : 'Item Desconhecido',
                 quantity: item.quantity,
                 unitPrice: menuItem ? menuItem.price : 0,
+                delivered: item.delivered ?? false, // ✅ Por padrão, false se não estiver definido
+
             };
         });
 
